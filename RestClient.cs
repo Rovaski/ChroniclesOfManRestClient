@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ChroniclesOfManRestClient
 {
@@ -32,26 +33,34 @@ namespace ChroniclesOfManRestClient
             request.Accept = "application/json";
             request.Method = httpMethod.ToString();
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+
+
+            try
             {
-                if (response.StatusCode != HttpStatusCode.OK)
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    throw new Exception(response.StatusCode.ToString());
-                }
-            
-            using (Stream responseStream = response.GetResponseStream())
-                {
-                    if(responseStream != null)
+
+                    
+
+                    using (Stream responseStream = response.GetResponseStream())
                     {
-                        using(StreamReader reader = new StreamReader(responseStream))
+                        if (responseStream != null)
                         {
-                            strResponseValue = reader.ReadToEnd();
+                            using (StreamReader reader = new StreamReader(responseStream))
+                            {
+                                strResponseValue = reader.ReadToEnd();
+                            }
                         }
                     }
+
                 }
+            }
+            catch (WebException ex)
+            {
+                
+                        MessageBox.Show($"Error code {ex}", "Response not OK", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             }
-
             return strResponseValue;
         }
     }

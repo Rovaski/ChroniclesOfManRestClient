@@ -35,10 +35,9 @@ namespace ChroniclesOfManRestClient
         {
             try
             {
+                txtResponse.Clear();
                 System.Diagnostics.Debug.Write(strResponse + Environment.NewLine);
-                txtResponse.Text = txtResponse.Text +strResponse + Environment.NewLine;
-                txtResponse.SelectionStart = txtResponse.TextLength;
-                txtResponse.ScrollToCaret();
+                txtResponse.Text = txtResponse.Text + PrettyJson(strResponse) + Environment.NewLine;
             }
             catch (Exception e)
             {
@@ -50,13 +49,12 @@ namespace ChroniclesOfManRestClient
         private void searchRest_Click(object sender, EventArgs e)
         {
             RestClient restClient = new RestClient();
-            restClient.endPoint = txtRestUrl.Text + "?filter[title:contains]=" + searchBoxInput.Text;
+            restClient.endPoint = txtRestUrl.Text + "?name=" + searchBoxInput.Text;
 
             
             string strResponse = string.Empty;
 
             strResponse = restClient.makeRequest();
-            txtResponse.Clear();
             responseOutput(PrettyJson(strResponse));
         }
 
@@ -66,8 +64,10 @@ namespace ChroniclesOfManRestClient
             {
                 WriteIndented = true
             };
+
             var jsonElement = JsonSerializer.Deserialize<JsonElement>(garbage);
             return JsonSerializer.Serialize(jsonElement, options);
+            
         }
     }
 }
